@@ -5,9 +5,15 @@ const handlers = [];
 
 export function connect() {
     const token = localStorage.getItem('user-token')
-    const socket = new SockJS(`http://localhost:8086/api/v1/dialogs/unreaded/ws?token=${token}`);
+    const socket = new SockJS(`http://localhost:8086/api/v1/dialogs/unreaded`, {
+        method: 'GET',
+        heders: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    });
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, frame => {
+    stompClient.connect({Authorization:token}, frame => {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/activity', message => {
             handlers.forEach(handler => handler(JSON.parse(message.body)))
