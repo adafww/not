@@ -4,7 +4,8 @@ var stompClient = null;
 const handlers = [];
 
 export function connect() {
-    const socket = new SockJS('http://localhost:8086/api/v1/dialogs/unreaded');
+    const token = localStorage.getItem('user-token')
+    const socket = new SockJS(`http://localhost:8086/api/v1/dialogs/unreaded/ws?token=${token}`);
     stompClient = Stomp.over(socket);
     stompClient.connect({}, frame => {
         console.log('Connected: ' + frame);
